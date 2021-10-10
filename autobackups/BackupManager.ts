@@ -1,4 +1,4 @@
-import { bedrockServer } from "bdsx";
+import { bedrockServer } from "bdsx/bdsx";
 
 import { BackupUtils } from "./BackupUtils";
 import { IBackupSettings } from "./IBackupSettings";
