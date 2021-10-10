@@ -1,5 +1,6 @@
-import { bedrockServer } from "bdsx";
-
+import { bedrockServer } from "bdsx/bdsx";
+const backup = require('../config.json')
+const config = backup.autoBackUps
 import { BackupUtils } from "./BackupUtils";
 import { IBackupSettings } from "./IBackupSettings";
 
@@ -16,7 +17,7 @@ export class BackupManager {
 
     public async init(settings: IBackupSettings): Promise<void> {
         this.backupSettings = settings;
-        this.bedrockServerPath = settings.bedrockServerPath ?? "../../bedrock_server";
+        this.bedrockServerPath = settings.bedrockServerPath ?? config.bedrockServerPath;
         this.worldName = await BackupUtils.getWorldName(this.bedrockServerPath);
 
         console.log("bedrockServerPath:", this.bedrockServerPath);
