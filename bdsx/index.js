@@ -48,11 +48,11 @@ exports.CANCEL = common.CANCEL;
 exports.RawTypeId = makefunc.RawTypeId;
 exports.PacketId = MinecraftPacketIds;
 //@ts-ignore
-exports.NativePointer.prototype.readHex = function(size, nextLinePer = 16) {
+exports.NativePointer.prototype.readHex = function (size, nextLinePer = 16) {
     return hex(this.readBuffer(size), nextLinePer);
 };
 //@ts-ignore
-exports.NativePointer.prototype.analyze = function() {
+exports.NativePointer.prototype.analyze = function () {
     return analyzer.analyze(this);
 };
 exports.setOnRuntimeErrorListener = require("./legacy").legacy.setOnRuntimeErrorListener;
@@ -60,7 +60,7 @@ exports.setOnErrorListener = native.setOnErrorListener;
 exports.loadMap = analyzer.loadMap;
 Object.defineProperties(exports, {
     serverInstance: {
-        get() {
+        get(){
             return server.serverInstance;
         }
     }

@@ -28,10 +28,11 @@ import { ActorFactory, AdventureSettings, BlockPalette, Level, LevelData, Server
 import { CompoundTag } from "./nbt";
 import { networkHandler, NetworkHandler, NetworkIdentifier, ServerNetworkHandler } from "./networkidentifier";
 import { ExtendedStreamReadResult, Packet } from "./packet";
-import { AdventureSettingsPacket, AttributeData, GameRulesChangedPacket, PlayerListPacket, UpdateAttributesPacket, UpdateBlockPacket } from "./packets";
+import { AdventureSettingsPacket, AttributeData, GameRulesChangedPacket, PlayerListPacket, SetTimePacket, UpdateAttributesPacket, UpdateBlockPacket } from "./packets";
 import { BatchedNetworkPeer } from "./peer";
 import { Player, PlayerListEntry, ServerPlayer } from "./player";
 import { proc, procHacker } from "./proc";
+import { RakNet } from "./raknet";
 import { RakNetInstance } from "./raknetinstance";
 import { DisplayObjective, IdentityDefinition, Objective, ObjectiveCriteria, Scoreboard, ScoreboardId, ScoreboardIdentityRef, ScoreInfo } from "./scoreboard";
 import { DedicatedServer, Minecraft, ScriptFramework, serverInstance, ServerInstance, VanilaGameModuleServer, VanilaServerGameplayEventListener } from "./server";
@@ -67,6 +68,16 @@ Level.prototype.syncGameRules = function() {
     }
     wrapper.destruct();
 };
+const level$setTime = procHacker.js("Level::setTime", void_t, {this:Level}, int64_as_float_t);
+Level.prototype.setTime = function(time: number):void {
+    level$setTime.call(this, time);
+    const packet = SetTimePacket.create();
+    packet.time = time;
+    for (const player of serverInstance.getPlayers()) {
+        player.sendNetworkPacket(packet);
+    }
+};
+
 Level.prototype.getPlayers = function() {
     const out:ServerPlayer[] = [];
     for (const user of this.getUsers()) {
@@ -77,6 +88,7 @@ Level.prototype.getPlayers = function() {
     return out;
 };
 Level.prototype.getUsers = procHacker.js('Level::getUsers', CxxVector.make(EntityRefTraits), {this:Level});
+Level.prototype.getTime = procHacker.js("Level::getTime", int64_as_float_t, {this:Level});
 
 Level.abstract({
     vftable: VoidPointer,
@@ -166,6 +178,8 @@ Actor.prototype.getMaxHealth = procHacker.js("Actor::getMaxHealth", int32_t, {th
 
 Actor.prototype.setStatusFlag = procHacker.js("?setStatusFlag@Actor@@QEAA_NW4ActorFlags@@_N@Z", bool_t, {this:Actor}, int32_t, bool_t);
 Actor.prototype.getStatusFlag = procHacker.js("Actor::getStatusFlag", bool_t, {this:Actor}, int32_t);
+
+Actor.prototype.getLevel = procHacker.js("Actor::getLevel", Level, {this:Actor});
 
 Actor.fromUniqueIdBin = function(bin, getRemovedActor = true) {
     return serverInstance.minecraft.getLevel().fetchEntity(bin, getRemovedActor);
@@ -339,6 +353,10 @@ NetworkHandler.prototype.sendInternal = procHacker.js('NetworkHandler::_sendInte
 BatchedNetworkPeer.prototype.sendPacket = procHacker.js('BatchedNetworkPeer::sendPacket', void_t, {this:BatchedNetworkPeer}, CxxString, int32_t, int32_t, int32_t, int32_t);
 
 RakNetInstance.prototype.getPort = procHacker.js("RakNetInstance::getPort", uint16_t, {this:RakNetInstance});
+
+RakNet.RakPeer.prototype.GetAveragePing = procHacker.js("?GetAveragePing@RakPeer@RakNet@@UEAAHUAddressOrGUID@2@@Z", int32_t, { this: RakNet.RakPeer }, RakNet.AddressOrGUID);
+RakNet.RakPeer.prototype.GetLastPing = procHacker.js("?GetLastPing@RakPeer@RakNet@@UEBAHUAddressOrGUID@2@@Z", int32_t, { this: RakNet.RakPeer }, RakNet.AddressOrGUID);
+RakNet.RakPeer.prototype.GetLowestPing = procHacker.js("?GetLowestPing@RakPeer@RakNet@@UEBAHUAddressOrGUID@2@@Z", int32_t, { this: RakNet.RakPeer }, RakNet.AddressOrGUID);
 
 // packet.ts
 Packet.prototype.sendTo = function(target:NetworkIdentifier, unknownarg:number=0):void {
