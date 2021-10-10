@@ -1,5 +1,4 @@
 import { AttributeId } from "bdsx/bds/attribute";
-import { CommandOrigin, PlayerCommandOrigin } from "bdsx/bds/commandorigin";
 import { GameRule, GameRuleId } from "bdsx/bds/gamerules";
 import { TextPacket } from "bdsx/bds/packets";
 import { serverInstance } from "bdsx/bds/server";
@@ -36,24 +35,14 @@ panel.io.on("connection", (socket: any) => {
 
             socket.on(SocketEvents.StopServer, () => {
                 socket.emit(SocketEvents.Toast, "Stopping server.");
-                events.serverStop.on(() => {
-                    bedrockServer.executeCommand(`title @a title §l§bClosing §eServer...`);
-                    bedrockServer.executeCommand(`title @a subtitle §l§aThank you for playing On PinozenTH SMP!`);
-                    setTimeout(() => {
-                        bedrockServer.executeCommandOnConsole('give @a diamond_block 1');
-                        bedrockServer.executeCommandOnConsole('give @a netherite_scrap 1');
-                    }, 10000)
-                })
-                bedrockServer.stop();
+               bedrockServer.stop();
             });
             socket.on(SocketEvents.RestartServer, () => {
                 socket.emit(SocketEvents.Toast, "Restarting server.");
                 events.serverStop.on(() => {
-                    bedrockServer.executeCommand(`title @a title §l§bServer §eReboot`)
-                    bedrockServer.executeCommand(`title @a subtitle §l§aPls Log out The server!`)
                     setTimeout(() => {
                         execSync(process.argv.join(" "), {stdio: "inherit"});
-                    }, 10000);
+                    }, 5000);
                 });
                 bedrockServer.stop();
             });

@@ -398,13 +398,11 @@ bedrockServer.afterOpen().then(() => {
         const time = new Date().getTime();
         pidusage(process.pid, (err, stats) => {
             serverData.process.usage.ram.push({
-
                 percent: stats.memory * 100 / os.totalmem(),
                 time,
-
             });
             serverData.process.usage.cpu.push({
-                percent: stats.cpu / 1,
+                percent: stats.cpu,
                 time,
             });
             panel.io.emit(SocketEvents.UpdateResourceUsage);

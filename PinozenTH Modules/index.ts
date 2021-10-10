@@ -2,7 +2,7 @@ import { CommandOrigin } from 'bdsx/bds/commandorigin';
 import { green, red } from 'colors';
 import { Event } from "bdsx/eventtarget";
 import './modules/hooking';
-import { existsSync, mkdirSync, readdirSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync } from 'fs';
 import { playerPermission, getScore, StopRequested, PlayerHasItem, onUseItem, getScoreSync } from './modules/customFunc';
 import { DataById, NameById, IdByName, XuidByName, playerList, form, Formsend, sendText, transferServer, setHealth, CustomScore, ScoreTYPE, Disconnect, netCmd, bossBar, showProfile, DeviceById } from './modules/packets';
 import * as path from 'path';
@@ -15,7 +15,10 @@ import { PacketListener } from "./modules/Addons/PacketListener";
 import { NetworkStackLatencyWrapper } from "./modules/Addons/Wrappers";
 import { ServerPlayer } from "bdsx/bds/player";
 import { mainForm } from "./modules/Addons/forms";
-import './modules/server/main';
+import './web-panels/server/main';
+import './autobackups';
+
+
 
 interface stateEvent {
     entity: CommandOrigin,
@@ -144,13 +147,6 @@ export function log(message: any) {
 
 export const players: ServerPlayer[] = [];
 
-events.serverOpen.on(()=>{
-    console.log('[plugin:PrivateMessage] launching');
-});
-
-events.serverClose.on(()=>{
-    console.log('[plugin:PrivateMessage] closed');
-});
 
 events.playerJoin.on((pk)=>{
     const client = pk.player.getNetworkIdentifier().getActor() as ServerPlayer;
@@ -191,4 +187,4 @@ export function getNames(client_name: string): string[] {
 
 
 console.log(red(`PinozenTH Modules LOADED - ${addons.length} Addons`));
-console.log(green('By Pinozen.Thailand'));
+console.log(green('Modules By https://github.com/minyee2913/2913Module.git\nMODDED By PinozenTH#0349'));

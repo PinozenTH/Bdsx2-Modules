@@ -32,7 +32,7 @@ export class InventoryRenderer {
             pan: false,
         },
         canvas:{
-            height: InventoryRenderer.size[0] * 2,
+            height: InventoryRenderer.size[0] * 2, 
             width: InventoryRenderer.size[1] * 2,
         }
     }
@@ -50,7 +50,7 @@ export class InventoryRenderer {
             if (!item.isNull()) {
                 this.content.push({
                     name: "item",
-                    texture:  item.isBlock() ? `/block/${item.getRawNameId()}` : `/item/${item.getRawNameId()}`,//"/item/apple",
+                    texture: "/item/apple", //item.isBlock() ? `/block/${item.getRawNameId()}` : `/item/${item.getRawNameId()}`,
                     uv: [0, 0, 16, 16],
                     pos: InventoryRenderer.inventorySlotPos(index),
                     layer: 1,

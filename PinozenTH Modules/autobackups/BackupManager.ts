@@ -16,7 +16,7 @@ export class BackupManager {
 
     public async init(settings: IBackupSettings): Promise<void> {
         this.backupSettings = settings;
-        this.bedrockServerPath = settings.bedrockServerPath ?? "../bedrock_server";
+        this.bedrockServerPath = settings.bedrockServerPath ?? "../../bedrock_server";
         this.worldName = await BackupUtils.getWorldName(this.bedrockServerPath);
 
         console.log("bedrockServerPath:", this.bedrockServerPath);

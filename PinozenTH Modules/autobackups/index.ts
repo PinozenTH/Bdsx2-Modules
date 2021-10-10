@@ -12,6 +12,6 @@ backupManager.init({
     interval: 30,
     minIntervalBetweenBackups: 5
 }).then((res) => {
-    console.log(`backup manager initiated`);
+    console.log(`backup manager initiated\nCredit AutoBackups from: \nhttps://github.com/LastSandwich/bdsx-backup.git`);
 });
 
