@@ -1,61 +1,34 @@
-
-### Make the plugin project with the bootstrap
-```sh
-> npm run newplugin ./path/to/plugin 
-# it will install the generated plugin as a local package
-# Please execute this on the bdsx directory
+### On start
+go to Bdsx2-Modules
+run
 ```
-
-### Build the plugin
-* With VSCode
-Ctrl+Shift+B -> tsc: watch
-
-* With the command line
-```sh
-> npm run watch
+npm i
 ```
+## Config
 
-### Publish the plugin
-1. Create an npm account if you don't have one yet. [NPM Sign Up](https://www.npmjs.com/signup)
-2. Request for joining `@bdsx` organization at `#npm-bdsx-org-member-request` channel of [the discord server](https://discord.gg/pC9XdkC) with npm ID or EMail.
-3. Login with the command line.
-```sh
-> npm login
-npm notice Log in on https://registry.npmjs.org/
-Username: # Enter Username
-Password: # Enter Password
-Email: (this IS public) # Enter Email
-```
-4. Publish with the command line
-```sh
-> cd path/to/plugin # move to the plugin directory
-> npm publish --access=public # publish the plugin
-```
+> Webpanel
 
-## Install the plugin to the other project
-* With the plugin manager
-Run plugin-manager.bat/sh.  
-Search and select the plugin.
-Select the version.
+Original:
+[Bdsx-web-panel](https://github.com/Rjlintkh/bdsx-web-panel.git)
 
-* With the command line
-```sh
-> npm i @bdsx/pluginname
-```
+- GraphUpdates: Update CPU graph every second (default: 60) [WARN: Low = More Resource usage/May crash your PC if too low]
+- same_port_with_bds: use webpanel port with bds port (default:19132)
+- port: port of you webpanel (domain:port | default: 19132)
+- chat_name: display in chat (like this <chat_name> message | default: Server)
+- username: your username to login to panel (default: admin)
+- password: your password to login to panel (default: 123)
 
-* With `plugins/` directory
-Copy to `plugins/` directory
+> AutoBackups
 
-## Remove the plugin
-* With the plugin manager
-Run plugin-manager.bat/sh.  
-Search and select the plugin.
-Select `Remove`.
+Original:
+[bdsx-backup](https://github.com/LastSandwich/bdsx-backup.git)
 
-* With the command line
-```sh
-> npm r @bdsx/pluginname
-```
+- BackupsBroadcast: Broadcast to server player when backup has started
+- backupOnStart: backup will occur when the server is started
+- interval: minutes between each backup
+- skipIfNoActivity: only create a backup if players have been active the previous backup
+- backupOnPlayerConnected: run a backup when a player joins
+- backupOnPlayerDisconnected: run a backup when a player leaves
+- minIntervalBetweenBackups: minimum minutes between backups
+- bedrockServerPath: path to the bedrock_server folder - defaults to "../../bedrock_server"
 
-* With `plugins/` directory
-Delete from `plugins/` directory

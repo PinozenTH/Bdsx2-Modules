@@ -45,7 +45,7 @@ class ServerPanel {
     readonly io = require("socket.io")(this.http);
     private sockets: any = {};
     private nextSocketId = 0;
-    config = require("../config.json");
+    config = require("../../config.json");
     getPanelPort():number {
         if (this.config["same_port_with_bds"]) {
             return Number(serverProperties["server-port"]);

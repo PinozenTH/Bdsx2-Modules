@@ -1,0 +1,24 @@
+{
+    "webpanel": {
+        "graphUpdateTime": 60,
+        "same_port_with_bds": true,
+        "port": 19132,
+        "path": "/",
+        "chat_name": "Server",
+        "account": {
+            "username": "admin",
+            "password": "123"
+        }
+    },
+    "autoBackUps": {
+        "BackupsBroadcast": "tellraw @a {\"rawtext\": [{\"text\": \"§lBackup\"},{\"text\": \"§r ${message}\"}]}",
+        "bedrockServerPath": "../../bedrock_server",
+        "backupOnStart": true,
+        "skipIfNoActivity": true,
+        "backupOnPlayerDisconnected": true,
+        "backupOnPlayerConnected": true,
+        "Backups_Times": 30,
+        "minIntervalBetweenBackups": 5
+    }
+
+}

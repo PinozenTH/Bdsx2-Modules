@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BackupManager = void 0;
 const BackupUtils_1 = require("./BackupUtils");
+const backups = require('../config.json')
+const config = backups.autoBackUps
 class BackupManager {
     constructor(bds, testOnly, tempName) {
         this.bds = bds;
@@ -16,7 +18,7 @@ class BackupManager {
         this.displayStatus = (message) => {
             if (this.activePlayerCount > 0) {
                 // eslint-disable-next-line no-useless-escape
-                this.bds.executeCommandOnConsole(`tellraw @a {\"rawtext\": [{\"text\": \"§lBackup\"},{\"text\": \"§r ${message}\"}]}`);
+                this.bds.executeCommandOnConsole(config.BackupsBroadcast);
             }
         };
     }
@@ -32,7 +34,7 @@ class BackupManager {
         }
         await this.registerHandlers();
         if (settings.interval && settings.interval > 0) {
-            setInterval(async () => {
+            setInterval(async() => {
                 await this.backup();
             }, settings.interval * 60000);
         }
@@ -56,12 +58,10 @@ class BackupManager {
             if (this.activePlayerCount > 0 || this.runNextBackup) {
                 console.log("Call save hold due to activity");
                 this.bds.executeCommandOnConsole("save hold");
-            }
-            else {
+            } else {
                 console.log("Skip backup - no activity");
             }
-        }
-        else {
+        } else {
             console.log("Call save hold (no activity)");
             this.bds.executeCommandOnConsole("save hold");
         }
@@ -75,8 +75,7 @@ class BackupManager {
                         this.bds.executeCommandOnConsole("save resume");
                         this.runNextBackup = true;
                     }, 1000);
-                }
-                else {
+                } else {
                     this.resumeRetryCounter = 0;
                 }
             }
@@ -122,7 +121,7 @@ class BackupManager {
         this.displayStatus("Starting...");
         const tempDirectory = await BackupUtils_1.BackupUtils.createTempDirectory(this.worldName, handleError, this.tempName);
         await BackupUtils_1.BackupUtils.moveFiles(`${this.bedrockServerPath}/worlds`, tempDirectory, this.worldName, handleError);
-        await Promise.all(files.slice(1).map(async (file) => {
+        await Promise.all(files.slice(1).map(async(file) => {
             await BackupUtils_1.BackupUtils.truncate(file, tempDirectory);
         }));
         await BackupUtils_1.BackupUtils.zipDirectory(`${this.bedrockServerPath}/backups`, tempDirectory, this.worldName, handleError);
