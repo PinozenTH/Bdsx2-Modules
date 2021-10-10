@@ -1,5 +1,5 @@
 import { panel } from "./server";
-const port = require('../config.json');
+const port = require('../../config.json');
 
 panel.init();
 
