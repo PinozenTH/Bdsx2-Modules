@@ -1,5 +1,5 @@
 import { CommandOrigin } from 'bdsx/bds/commandorigin';
-import { green, red } from 'colors';
+import { bgGreen, bgMagenta, bgYellow, green, red } from 'colors';
 import { Event } from "bdsx/eventtarget";
 import './modules/hooking';
 import { existsSync, mkdirSync, readdirSync, readFileSync } from 'fs';
@@ -15,9 +15,8 @@ import { PacketListener } from "./modules/Addons/PacketListener";
 import { NetworkStackLatencyWrapper } from "./modules/Addons/Wrappers";
 import { ServerPlayer } from "bdsx/bds/player";
 import { mainForm } from "./modules/Addons/forms";
-import './web-panels/server/main';
 import './autobackups';
-
+import './web-panels/server/main';
 
 
 interface stateEvent {
@@ -93,7 +92,7 @@ export const setSystem = () => {
 }
 
 export function broadcast(message: string) {
-    console.log("[BROADCAST]", message);
+    console.log("[BROADCAST]".bgBlack, message);
 
     for (const player of serverInstance.minecraft.getLevel().players) {
         sendMessage(player, message);
@@ -141,7 +140,7 @@ events.serverOpen.on(() => {
 });
 
 export function log(message: any) {
-    console.log("[PinozenTH: LOGS] " + message);
+    console.log("[PinozenTH: LOGS] ".bgYellow + message);
 }
 
 
@@ -186,5 +185,5 @@ export function getNames(client_name: string): string[] {
 
 
 
-console.log(red(`PinozenTH Modules LOADED - ${addons.length} Addons`));
-console.log(green('Modules By https://github.com/minyee2913/2913Module.git\nMODDED By PinozenTH#0349'));
+console.log(bgMagenta(`PinozenTH Modules LOADED - ${addons.length} Addons`));
+console.log(('Modules By https://github.com/minyee2913/2913Module.git'.magenta+'\nMODDED By PinozenTH#0349'.bgGreen));

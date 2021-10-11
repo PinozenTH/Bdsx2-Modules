@@ -1,6 +1,6 @@
 export * from "./BackupManager";
 const backups = require('../config.json');
-const config = backups.AutoBackups
+const config = backups.autoBackUps
 
 
 import { BackupManager } from "./BackupManager";
@@ -15,6 +15,6 @@ backupManager.init({
     interval: config.backups_Times,
     minIntervalBetweenBackups: config.minIntervalBetweenBackups
 }).then((res) => {
-    console.log(`backup manager initiated\nCredit AutoBackups from: \nhttps://github.com/LastSandwich/bdsx-backup.git`);
+    console.log(`BackUp Manager Started`.bgCyan+`\nCredit AutoBackups from: \n`+`https://github.com/LastSandwich/bdsx-backup.git`.yellow);
 });
 

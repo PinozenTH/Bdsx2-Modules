@@ -12,7 +12,7 @@ import { panel, SocketEvents } from "./server";
 
 panel.io.on("connection", (socket: any) => {
     socket.on(SocketEvents.Login, (username: string, password: string, silent?: boolean) => {
-        if (username === panel.config.webpanel.account.username && password === panel.config.webpanel.account.password) {
+        if (username === panel.config.account.username && password === panel.config.account.password) {
             socket.emit(SocketEvents.Login);
             if (!silent) {
                 socket.emit(SocketEvents.Toast, "Logged in successfully.", "success");
@@ -53,12 +53,12 @@ panel.io.on("connection", (socket: any) => {
             socket.on(SocketEvents.InputChat, (chat: string) => {
                 const pk = TextPacket.create();
                 pk.type = TextPacket.Types.Chat;
-                pk.name = panel.config.webpanel["chat_name"];
+                pk.name = panel.config["chat_name"];
                 pk.message = chat;
                 Utils.broadcastPacket(pk);
                 socket.emit(SocketEvents.Toast, "Message sent.", "success");
                 serverData.server.logs.chat.push({
-                    name: panel.config.webpanel["chat_name"],
+                    name: panel.config["chat_name"],
                     message: Utils.formatColorCodesToHTML(chat),
                     time: new Date().getTime(),
                 });

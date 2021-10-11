@@ -409,7 +409,7 @@ bedrockServer.afterOpen().then(() => {
             panel.io.emit(SocketEvents.UpdateResourceUsage);
         });
         return _;
-    }(), 1000 * graphUpdate.webpanel.graphUpdateTime).unref();
+    }(), 1000 * graphUpdate.graphUpdateTime).unref();
 });
 events.queryRegenerate.on(event => {
     serverData.server.announcement.name = event.motd;
