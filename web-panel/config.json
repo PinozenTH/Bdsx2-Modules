@@ -1,0 +1,10 @@
+{
+    "same_port_with_bds": true,
+    "port": 19132,
+    "path": "/",
+    "chat_name": "Server",
+    "account": {
+        "username": "admin",
+        "password": "123"
+    }
+}
