@@ -16,7 +16,6 @@ import { NetworkStackLatencyWrapper } from "./modules/Addons/Wrappers";
 import { ServerPlayer } from "bdsx/bds/player";
 import { mainForm } from "./modules/Addons/forms";
 import './autobackups';
-import './web-panels/server/main';
 import "./images-maps";
 import { Color } from "./images-maps/color";
 import { MapItem } from "./images-maps/map-item";
@@ -26,6 +25,7 @@ export { Color, MapItem, MapApi, MapItemSavedData };
 import './DisplayPlayerRankOnChat';
 import './GreetingPlayer';
 import './Basic anticheats';
+import './web-panel/server/main'
 
 
 interface stateEvent {

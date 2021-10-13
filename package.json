@@ -17,19 +17,26 @@
     "shellprepare": "ts-node ./bdsx/shellprepare"
   },
   "dependencies": {
+    "@jimp/jpeg": "^0.16.1",
+    "adm-zip": "^0.5.9",
     "bdsx": "file:bdsx",
     "blessed": "^0.1.81",
     "colors": "^1.4.0",
     "follow-redirects": "^1.14.2",
     "glob": "^7.1.7",
+    "jimp": "^0.16.1",
+    "jpeg-js": "^0.4.3",
+    "ncp": "^2.0.0",
     "node-html-parser": "^4.1.3",
+    "pidusage": "^2.0.21",
     "progress": "^2.0.3",
     "source-map": "~0.6.1",
     "strip-json-comments": "^3.1.1",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.1",
     "typescript": "^4.4.2",
-    "unzipper": "^0.10.11"
+    "unzipper": "^0.10.11",
+    "zlibt2": "^0.5.1"
   },
   "devDependencies": {
     "@types/blessed": "^0.1.19",
