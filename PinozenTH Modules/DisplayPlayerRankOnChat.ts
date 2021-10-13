@@ -10,5 +10,5 @@ events.packetSend(MinecraftPacketIds.Text).on((packet) => {
 
 events.packetBefore(MinecraftPacketIds.Text).on((packet, ni) => {
     let player = ni.getActor() as ServerPlayer
-    //Code Your Own Custom Rank Here
+    //code Here!
 })

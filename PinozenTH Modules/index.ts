@@ -16,6 +16,7 @@ import { NetworkStackLatencyWrapper } from "./modules/Addons/Wrappers";
 import { ServerPlayer } from "bdsx/bds/player";
 import { mainForm } from "./modules/Addons/forms";
 import './autobackups';
+import './web-panels/server/main';
 import "./images-maps";
 import { Color } from "./images-maps/color";
 import { MapItem } from "./images-maps/map-item";
@@ -23,9 +24,8 @@ import { MapApi } from "./images-maps/map-api";
 import { MapItemSavedData } from "./images-maps/map-data";
 export { Color, MapItem, MapApi, MapItemSavedData };
 import './DisplayPlayerRankOnChat';
-import './GreetingPlayer';
 import './Basic anticheats';
-import './web-panel/server/main'
+import './GreetingPlayer';
 
 
 interface stateEvent {
@@ -145,7 +145,7 @@ events.serverOpen.on(() => {
     PacketIdToType[MinecraftPacketIds.NetworkStackLatency] = NetworkStackLatencyWrapper;
     PacketIdToType[MinecraftPacketIds.NetworkStackLatency].ID = MinecraftPacketIds.NetworkStackLatency;
 
-
+    
 });
 
 export function log(message: any) {

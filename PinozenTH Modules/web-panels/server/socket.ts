@@ -35,7 +35,7 @@ panel.io.on("connection", (socket: any) => {
 
             socket.on(SocketEvents.StopServer, () => {
                 socket.emit(SocketEvents.Toast, "Stopping server.");
-               bedrockServer.stop();
+                bedrockServer.stop();
             });
             socket.on(SocketEvents.RestartServer, () => {
                 socket.emit(SocketEvents.Toast, "Restarting server.");

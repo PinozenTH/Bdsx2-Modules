@@ -1,7 +1,7 @@
 import fs = require("fs");
 import path = require("path");
 import os = require("os");
-import pidusage = require("pidusage")
+import pidusage = require("pidusage");
 import { GameRule, GameRuleId } from "bdsx/bds/gamerules";
 import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { MinecraftPacketIds } from "bdsx/bds/packetids";
@@ -15,6 +15,7 @@ import { loadedPackages, loadedPlugins } from "bdsx/plugins";
 import { serverProperties } from "bdsx/serverproperties";
 import { Utils } from "../utils";
 import { panel, SocketEvents } from "./server";
+const graphUpdate = require('../../config.json')
 
 class DeepProxy {
     private _preproxy: WeakMap<object, any>;
@@ -409,7 +410,7 @@ bedrockServer.afterOpen().then(() => {
             panel.io.emit(SocketEvents.UpdateResourceUsage);
         });
         return _;
-    }(), 60000).unref();
+    }(), 1000 * graphUpdate.graphUpdateTime).unref();
 });
 events.queryRegenerate.on(event => {
     serverData.server.announcement.name = Utils.formatColorCodesToHTML(event.motd);
