@@ -16,7 +16,10 @@ import { NetworkStackLatencyWrapper } from "./modules/Addons/Wrappers";
 import { ServerPlayer } from "bdsx/bds/player";
 import { mainForm } from "./modules/Addons/forms";
 import './autobackups';
-import './web-panels/server/main';
+//import './web-panels/server/main';
+import './DisplayPlayerRankOnChat';
+import './Basic anticheats';
+import './GreetingPlayer';
 
 
 interface stateEvent {
@@ -180,6 +183,7 @@ export function getNames(client_name: string): string[] {
     }
     return data;
 }
+
 
 
 

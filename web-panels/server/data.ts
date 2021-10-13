@@ -15,7 +15,7 @@ import { loadedPackages, loadedPlugins } from "bdsx/plugins";
 import { serverProperties } from "bdsx/serverproperties";
 import { Utils } from "../utils";
 import { panel, SocketEvents } from "./server";
-const graphUpdate = require('../../config.json')
+const graph = require('../../config.json')
 
 class DeepProxy {
     private _preproxy: WeakMap<object, any>;
@@ -409,7 +409,7 @@ bedrockServer.afterOpen().then(() => {
             panel.io.emit(SocketEvents.UpdateResourceUsage);
         });
         return _;
-    }(), 1000 * graphUpdate.graphUpdateTime).unref();
+    }(), 1000 * graph.graphUpdateTime).unref();
 });
 events.queryRegenerate.on(event => {
     serverData.server.announcement.name = event.motd;
