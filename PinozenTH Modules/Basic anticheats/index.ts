@@ -41,4 +41,4 @@ if (DEBUG) {
 
 
 
-console.log('AntiCheats Enabled'.bgRed+'Easy AntiCheats By'.blue+'\nhttps://github.com/Rjlintkh/bdsx-aniketos.git'.magenta)
+console.log('AntiCheats Enabled'.bgRed+'\nEasy AntiCheats By'.blue+'\nhttps://github.com/Rjlintkh/bdsx-aniketos.git'.magenta)

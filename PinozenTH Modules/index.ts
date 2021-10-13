@@ -23,8 +23,9 @@ import { MapItem } from "./images-maps/map-item";
 import { MapApi } from "./images-maps/map-api";
 import { MapItemSavedData } from "./images-maps/map-data";
 export { Color, MapItem, MapApi, MapItemSavedData };
-import './DisplayPlayerRankOnChat'
-import './Basic anticheats'
+import './DisplayPlayerRankOnChat';
+import './GreetingPlayer';
+import './Basic anticheats';
 
 
 interface stateEvent {
@@ -144,7 +145,7 @@ events.serverOpen.on(() => {
     PacketIdToType[MinecraftPacketIds.NetworkStackLatency] = NetworkStackLatencyWrapper;
     PacketIdToType[MinecraftPacketIds.NetworkStackLatency].ID = MinecraftPacketIds.NetworkStackLatency;
 
-    
+
 });
 
 export function log(message: any) {

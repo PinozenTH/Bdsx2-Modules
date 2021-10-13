@@ -1,11 +1,11 @@
 node_modules
-*.d.ts
-*.ini
 /bedrock_server/*
 !/bedrock_server/vcruntime140_1.dll
 !/bedrock_server/dbghelp.dll
 /npm-debug.log
 /pdbcache_by_example.ini
+*.d.ts
+*.ini
 *.js
 !/bdsx/index.js
 !/bdsx/legacy.js

@@ -83,9 +83,30 @@ events.packetBefore(MinecraftPacketIds.Text).on((packet, ni) => {
 
 > **Greetings Message for Player**
 
+- Greeting Joined Player
 
+Please Change Scripts in PinozenTH Modules/GreetingPlayer.ts
+
+Example Script
+```
+    //ranked Player
+    if(Player.hasTag('rank')) {
+        let message =  `Welcome [rank] ${PlayerName} to server`;
+        setTimeout(()=>{
+            greet(`tellraw @a {"rawtext":[{"translate": "${message}"}]}`);
+    }, 10000);
+    return;
+    }
+    //unranked || normal Player
+    let message =  `Welcome [rank] ${PlayerName} to server`;
+    setTimeout(()=>{
+            greet(`tellraw @a {"rawtext":[{"translate": "${message}"}]}`);
+    }, 10000);
+    return;
+```
 
 > **Join Announce ranked player Join Event**
+
 
 
 > **Found Bugs in module??**
