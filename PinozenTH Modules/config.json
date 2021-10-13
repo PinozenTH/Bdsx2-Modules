@@ -17,6 +17,16 @@
         "backupOnPlayerConnected": true,
         "Backups_Times": 30,
         "minIntervalBetweenBackups": 5
+    },
+    "Greeting": {
+        "normalPlayer": {
+            "first": "Word before PlayerName",
+            "last": "After PlayerName \nfor new line"
+        },
+        "RankedPlayer": {
+            "first": "Word before PlayerName",
+            "last": "After PlayerName \nfor new line"
+        }
     }
 
 }
