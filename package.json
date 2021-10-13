@@ -24,7 +24,6 @@
     "colors": "^1.4.0",
     "follow-redirects": "^1.14.2",
     "glob": "^7.1.7",
-    "jimp": "^0.16.1",
     "jpeg-js": "^0.4.3",
     "ncp": "^2.0.0",
     "node-html-parser": "^4.1.3",
