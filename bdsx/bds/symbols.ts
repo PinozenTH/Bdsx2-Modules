@@ -226,6 +226,7 @@ const symbols = [
     'Level::save',
     'Level::tick',
     'Level::getUsers',
+    'Level::getEntities',
     'ServerLevel::setCommandsEnabled',
     'ServerLevel::setShouldSendSleepMessage',
     'CommandUtils::createItemStack',
@@ -310,7 +311,14 @@ const symbols = [
     'Actor::getActorIdentifier',
     'Level::getTime',
     'Level::setTime',
-    'Actor::getLevel'
+    'Actor::getLevel',
+    'Level::getSpawner',
+    'Spawner::spawnItem',
+    'Spawner::spawnMob',
+    'BlockPalette::getBlockLegacy',
+    'BlockLegacy::getRenderBlock',
+    'ServerPlayer::setArmor',
+    'ProjectileComponent::shoot',
 ] as const;
 
 // decorated symbols
@@ -362,10 +370,16 @@ const symbols2 = [
     '?GetLastPing@RakPeer@RakNet@@UEBAHUAddressOrGUID@2@@Z',
     '?GetLowestPing@RakPeer@RakNet@@UEBAHUAddressOrGUID@2@@Z',
     '??0NetworkItemStackDescriptor@@QEAA@AEBVItemStack@@@Z',
+    '?spawnParticleEffect@Level@@UEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBVVec3@@PEAVDimension@@@Z',
 ] as const;
 
-
-export const proc = pdb.getList(pdb.coreCachePath, {}, symbols, false, UNDNAME_NAME_ONLY);
+export const proc = pdb.getList(
+    pdb.coreCachePath,
+    {},
+    symbols,
+    false,
+    UNDNAME_NAME_ONLY
+);
 export const proc2 = pdb.getList(pdb.coreCachePath, {}, symbols2);
 
 pdb.close();

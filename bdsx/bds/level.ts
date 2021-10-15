@@ -2,11 +2,13 @@ import { abstract } from "../common";
 import type { VoidPointer } from "../core";
 import { CxxVector, CxxVectorLike } from "../cxxvector";
 import { NativeClass } from "../nativeclass";
-import type { Actor, ActorUniqueID, DimensionId, EntityRefTraits } from "./actor";
-import type { BlockSource } from "./block";
-import type { BlockPos } from "./blockpos";
+import { CxxString } from "../nativetype";
+import type { Actor, ActorDefinitionIdentifier, ActorUniqueID, DimensionId, EntityRefTraits, ItemActor } from "./actor";
+import type { BlockLegacy, BlockSource } from "./block";
+import type { BlockPos, Vec3 } from "./blockpos";
 import type { Dimension } from "./dimension";
 import type { GameRules } from "./gamerules";
+import type { ItemStack } from "./inventory";
 import type { ServerPlayer } from "./player";
 import type { Scoreboard } from "./scoreboard";
 
@@ -35,6 +37,12 @@ export class Level extends NativeClass {
         abstract();
     }
     getUsers():CxxVector<EntityRefTraits> {
+        abstract();
+    }
+    protected _getEntities():CxxVector<EntityRefTraits> {
+        abstract();
+    }
+    getEntities():Actor[] {
         abstract();
     }
     createDimension(id:DimensionId):Dimension {
@@ -73,6 +81,9 @@ export class Level extends NativeClass {
     getSeed():number {
         abstract();
     }
+    getSpawner():Spawner {
+        abstract();
+    }
     getTagRegistry():TagRegistry {
         abstract();
     }
@@ -94,6 +105,10 @@ export class Level extends NativeClass {
     syncGameRules():void {
         abstract();
     }
+    /** @param effectName accepts format like "minecraft:arrow_spell_emitter" */
+    spawnParticleEffect(effectName:string, spawnLocation:Vec3, dimension:Dimension):void {
+        abstract();
+    }
 }
 
 export class ServerLevel extends Level {
@@ -110,12 +125,24 @@ export class LevelData extends NativeClass {
 
 export class ActorFactory extends NativeClass {
 }
-
 export class BlockPalette extends NativeClass {
+    /** @param name only accepts format like "minecraft:wool" */
+    getBlockLegacy(name:CxxString):BlockLegacy {
+        abstract();
+    }
 }
 
 export class AdventureSettings extends NativeClass {
 }
 
 export class TagRegistry extends NativeClass {
+}
+
+export class Spawner extends NativeClass {
+    spawnItem(region:BlockSource, itemStack:ItemStack, pos:Vec3, throwTime:number):ItemActor {
+        abstract();
+    }
+    spawnMob(region:BlockSource, id:ActorDefinitionIdentifier, pos:Vec3, naturalSpawn = false, surface = true, fromSpawner = false):Actor {
+        abstract();
+    }
 }
