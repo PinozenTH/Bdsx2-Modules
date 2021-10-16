@@ -1,8 +1,8 @@
-##### BDSX2
+##### BDSX2 By PinozenTH
 
 Modded Version of [BDSX](https://github.com/bdsx/bdsx)
 
-[Lasted Version](https://github.com/PinozenTH/Bdsx2/releases/lasted/download/Bdsx2-PinozenTH.v1.zip)
+[Lasted Version](https://github.com/PinozenTH/Bdsx2/releases/lasted/download/Bdsx2-PinozenTH.zip)
 
 #### Build-in Features
 
