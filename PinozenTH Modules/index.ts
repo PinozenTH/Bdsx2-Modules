@@ -139,7 +139,7 @@ events.serverOpen.on(() => {
     PacketIdToType[MinecraftPacketIds.NetworkStackLatency] = NetworkStackLatencyWrapper;
     PacketIdToType[MinecraftPacketIds.NetworkStackLatency].ID = MinecraftPacketIds.NetworkStackLatency;
 
-    
+
 });
 
 export function log(message: any) {
