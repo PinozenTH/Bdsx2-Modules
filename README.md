@@ -113,7 +113,7 @@ Example Script
 
 > **Found Bugs in module??**
 
-pls contract me via Discord: PinoZenTH#0349
+pls contract me via Discord: `PinoZenTH#0349`
 
 > **if you found bugs on [BDSX](https://github.com/bdsx/bdsx)**
 Please join [BDSX Discord](https://discord.gg/pC9XdkC) and discuss to [kerikera](https://github.com/karikera)
