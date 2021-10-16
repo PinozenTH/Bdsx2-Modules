@@ -1,4 +1,4 @@
-##### BDSX2
+##### BDSX2 By PinozenTH
 
 Modded Version of [BDSX](https://github.com/bdsx/bdsx)
 
