@@ -10,12 +10,14 @@ import { KeysFilter, nativeClass, NativeClass, NativeClassType, nativeField } fr
 import { bin64_t, bool_t, CxxString, float32_t, int16_t, int32_t, NativeType, Type, uint32_t, void_t } from "../nativetype";
 import { SharedPtr } from "../sharedpointer";
 import { templateName } from "../templatename";
+import { getEnumKeys } from "../util";
 import { Actor } from "./actor";
 import { BlockPos, RelativeFloat, Vec3 } from "./blockpos";
 import { CommandOrigin } from "./commandorigin";
 import { JsonValue } from "./connreq";
 import { AvailableCommandsPacket } from "./packets";
 import { procHacker } from "./proc";
+import { serverInstance } from "./server";
 import { HasTypeId, typeid_t, type_id } from "./typeid";
 
 export enum CommandPermissionLevel {
@@ -345,6 +347,7 @@ export class MinecraftCommands extends NativeClass {
 export enum CommandParameterDataType { NORMAL, ENUM, SOFT_ENUM, POSTFIX }
 
 const parsers = new Map<Type<any>, VoidPointer>();
+let enumParser:VoidPointer;
 
 @nativeClass()
 export class CommandParameterData extends NativeClass {
@@ -376,6 +379,89 @@ export class CommandVFTable extends NativeClass {
     destructor:VoidPointer;
     @nativeField(VoidPointer)
     execute:VoidPointer|null;
+}
+
+export class CommandEnum<V extends string|number|symbol> extends NativeType<string> {
+    public readonly mapper = new Map<string, V>();
+
+    constructor(name:string) {
+        super(name,
+            CxxString[NativeType.size],
+            CxxString[NativeType.align],
+            CxxString.isTypeOf,
+            CxxString.isTypeOfWeak,
+            CxxString[NativeType.getter],
+            CxxString[NativeType.setter],
+            CxxString[makefunc.getFromParam],
+            CxxString[makefunc.setToParam],
+            CxxString[NativeType.ctor],
+            CxxString[NativeType.dtor],
+            CxxString[NativeType.ctor_copy],
+            CxxString[NativeType.ctor_move]);
+    }
+
+    protected _init():void {
+        for (const value of this.mapper.keys()) {
+            if (value === "") throw Error(`${value}: enum value cannot be empty`); // It will be ignored by CommandRegistry::addEnumValues if it is empty
+
+            /*
+                Allowed special characters:
+                - (
+                - )
+                - -
+                - .
+                - ?
+                - _
+                and the ones whose ascii code is bigger than 127, like §, ©, etc.
+            */
+            const regex = /[ -'*-,/:->@[-^`{-~]/g;
+            let invalidCharacters = '';
+            let matched:RegExpExecArray|null;
+            while ((matched = regex.exec(value)) !== null) {
+                invalidCharacters += matched[0];
+            }
+            if (invalidCharacters !== '') throw Error(`${value}: enum value contains invalid characters (${invalidCharacters})`);
+        }
+
+        const registry = serverInstance.minecraft.getCommands().getRegistry();
+        const enumId = registry.addEnumValues(this.name, [...this.mapper.keys()]);
+        type_id.register(CommandRegistry, this, enumId);
+    }
+}
+
+export class CommandStringEnum<T extends string[]> extends CommandEnum<T[number]> {
+    public readonly values:T;
+
+    constructor(name:string, ...values:T) {
+        super(name);
+        this.values = values;
+
+        for (const value of values) {
+            const lower = value.toLocaleLowerCase();
+            if (this.mapper.has(lower)) {
+                throw Error(`${value}: enum value duplicated`);
+            }
+            this.mapper.set(lower, value);
+        }
+        this._init();
+    }
+}
+
+export class CommandIndexEnum<T extends number|string> extends CommandEnum<T> {
+    public readonly enum:Record<string, T>;
+    constructor(name:string, enumType:Record<string, T>) {
+        super(name);
+        this.enum = enumType;
+
+        for (const key of getEnumKeys(enumType)) {
+            const lower = key.toLocaleLowerCase();
+            if (this.mapper.has(lower)) {
+                throw Error(`${key}: enum value duplicated`);
+            }
+            this.mapper.set(lower, enumType[key]);
+        }
+        this._init();
+    }
 }
 
 @nativeClass()
@@ -439,7 +525,15 @@ export class Command extends NativeClass {
         type:CommandParameterDataType = CommandParameterDataType.NORMAL):CommandParameterData {
         const param = CommandParameterData.construct();
         param.tid.id = type_id(CommandRegistry, paramType).id;
-        param.parser = CommandRegistry.getParser(paramType);
+        if (paramType instanceof CommandEnum) {
+            if (desc != null) {
+                throw Error(`CommandEnum does not support description`);
+            }
+            desc = paramType.name;
+            param.parser = enumParser;
+        } else {
+            param.parser = CommandRegistry.getParser(paramType);
+        }
         param.name = name;
         param.type = type;
         if (desc != null) {
@@ -528,6 +622,18 @@ export class CommandRegistry extends HasTypeId {
         if (parser != null) return parser;
         throw Error(`${type.symbol || type.name} parser not found`);
     }
+
+    _addEnumValues(name:CxxString, values:CxxVector<CxxString>):number {
+        abstract();
+    }
+
+    addEnumValues(name:string, values:string[]):number {
+        const _values = CxxVector.make(CxxString).construct();
+        _values.setFromArray(values);
+        const ret = this._addEnumValues(name, _values);
+        _values.destruct();
+        return ret;
+    }
 }
 
 export namespace CommandRegistry {
@@ -579,6 +685,8 @@ export namespace CommandRegistry {
 
 function loadParserFromPdb(types:Type<any>[]):void {
     const symbols = types.map(type=>templateName('CommandRegistry::parse', type.symbol || type.name));
+    const enumParserSymbol = 'CommandRegistry::parseEnum<int,CommandRegistry::DefaultIdConverter<int> >';
+    symbols.push(enumParserSymbol);
 
     pdb.setOptions(SYMOPT_PUBLICS_ONLY); // XXX: CommandRegistry::parse<bool> does not found without it.
     const addrs = pdb.getList(pdb.coreCachePath, {}, symbols, false, UNDNAME_NAME_ONLY);
@@ -589,6 +697,8 @@ function loadParserFromPdb(types:Type<any>[]):void {
         if (addr == null) continue;
         parsers.set(types[i], addr);
     }
+
+    enumParser = addrs[enumParserSymbol];
 }
 
 const types = [
@@ -606,7 +716,7 @@ const types = [
     CommandPositionFloat,
     CommandRawText,
     CommandWildcardInt,
-    JsonValue
+    JsonValue,
 ];
 type_id.pdbimport(CommandRegistry, types);
 loadParserFromPdb(types);
@@ -625,6 +735,7 @@ CommandRegistry.prototype.registerOverloadInternal = procHacker.js('CommandRegis
 CommandRegistry.prototype.registerCommand = procHacker.js("CommandRegistry::registerCommand", void_t, {this:CommandRegistry}, CxxString, makefunc.Utf8, int32_t, int32_t, int32_t);
 CommandRegistry.prototype.registerAlias = procHacker.js("CommandRegistry::registerAlias", void_t, {this:CommandRegistry}, CxxString, CxxString);
 CommandRegistry.prototype.findCommand = procHacker.js("CommandRegistry::findCommand", CommandRegistry.Signature, {this:CommandRegistry}, CxxString);
+CommandRegistry.prototype._addEnumValues = procHacker.js("?addEnumValues@CommandRegistry@@QEAAHAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@3@@Z", int32_t, {this:CommandRegistry}, CxxString, CxxVector.make(CxxString));
 (CommandRegistry.prototype as any)._serializeAvailableCommands = procHacker.js("CommandRegistry::serializeAvailableCommands", AvailableCommandsPacket, {this:CommandRegistry}, AvailableCommandsPacket);
 
 'CommandRegistry::parse<AutomaticID<Dimension,int> >';
