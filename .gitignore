@@ -35,14 +35,14 @@ bower_components
 .lock-wscript
 
 # npm library files
-lib/
+/lib/
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
+/build/Release
 
 # Dependency directories
-node_modules/
-jspm_packages/
+/node_modules/
+/jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -97,13 +97,13 @@ dist
 .vuepress/dist
 
 # Serverless directories
-.serverless/
+/serverless/
 
 # FuseBox cache
-.fusebox/
+/fusebox/
 
 # DynamoDB Local files
-.dynamodb/
+/dynamodb/
 
 # TernJS port file
 .tern-port
@@ -114,16 +114,16 @@ dist
 .idea/*
 
 # yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+/yarn/cache
+/yarn/unplugged
+/yarn/build-state.yml
+/yarn/install-state.gz
+/pnp/*
 
 bedrock_server/backups/
 temp/
 *.js
 *.js.map
 *.d.ts
-bedrock_server/
-unRegisteredProject/*
+/bedrock_server/
+/unRegisteredProject/*
