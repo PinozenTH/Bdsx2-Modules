@@ -1,8 +1,16 @@
-##### BDSX2
+##### BDSX2 By PinozenTH
 
-Modded Version of [BDSX](https://github.com/bdsx/bdsx)
+**How to Use**
 
-[Lasted Version](https://github.com/PinozenTH/Bdsx2/releases/lasted/download/Bdsx2-PinozenTH.v1.zip)
+1) download module.zip
+2) create new folder in bdsx
+3) extract files into folder
+4) open terminal and `npm i`
+4) go to index.ts in bdsx
+5) import modules
+```
+import './moduleFolder';
+```
 
 #### Build-in Features
 
@@ -113,7 +121,7 @@ Example Script
 
 > **Found Bugs in module??**
 
-pls contract me via Discord: PinoZenTH#0349
+pls contract me via Discord: `PinoZenTH#0349`
 
 > **if you found bugs on [BDSX](https://github.com/bdsx/bdsx)**
 Please join [BDSX Discord](https://discord.gg/pC9XdkC) and discuss to [kerikera](https://github.com/karikera)

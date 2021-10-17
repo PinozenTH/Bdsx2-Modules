@@ -13,13 +13,13 @@
         "prepare": "tsc || exit 0"
     },
     "devDependencies": {
-        "@types/pidusage": "^2.0.1",
-        "bdsx": "file:../bdsx",
         "@types/jest": "^26.0.20",
         "@types/node": "~12.19.11",
+        "@types/pidusage": "^2.0.1",
         "@types/unzipper": "^0.10.3",
         "@typescript-eslint/eslint-plugin": "^4.14.1",
         "@typescript-eslint/parser": "^4.14.1",
+        "bdsx": "file:../bdsx",
         "eslint": "^7.18.0",
         "eslint-config-prettier": "^7.2.0",
         "eslint-plugin-import": "^2.22.1",
@@ -31,18 +31,18 @@
         "prettier": "^2.2.1",
         "ts-jest": "^26.4.1",
         "typescript": "^4.1.3",
-        "wait-for-expect": "^3.0.2",
-        "unzipper": "^0.10.11"
-
+        "unzipper": "^0.10.11",
+        "wait-for-expect": "^3.0.2"
     },
     "dependencies": {
+        "@types/adm-zip": "^0.4.33",
+        "@types/ncp": "^2.0.4",
+        "adm-zip": "^0.5.3",
         "express": "^4.17.1",
+        "jimp": "^0.9.8",
+        "ncp": "^2.0.0",
         "pidusage": "^2.0.21",
         "socket.io": "2.1.0",
-        "jimp": "^0.9.8",
-        "adm-zip": "^0.5.3",
-        "ncp": "^2.0.0",
-        "@types/adm-zip": "^0.4.33",
-        "@types/ncp": "^2.0.4"
+        "zlibt2": "^0.5.1"
     }
 }

@@ -2,7 +2,7 @@ import { BlockPos, RelativeFloat } from "bdsx/bds/blockpos";
 import { command } from "bdsx/command";
 import { abstract } from "bdsx/common";
 import { bool_t, CxxString, int32_t, NativeType, void_t } from "bdsx/nativetype";
-import { CommandPermissionLevel } from "../../../bdsx/bds/command";
+import { CommandPermissionLevel } from "bdsx/bds/command";
 import { BlockActor, Blocksource } from "./blocks";
 import { hacker } from "./hacker";
 import { compoundTag } from "./nbt";

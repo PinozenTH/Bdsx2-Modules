@@ -98,6 +98,7 @@ interface PlayerData {
     lang: string,
     scoreboardId?: number,
     gameInfo?: {
+        ping: number,
         pos: {
             x: number,
             y: number,
@@ -412,9 +413,9 @@ bedrockServer.afterOpen().then(() => {
     }(), 1000 * graph.graphUpdateTime).unref();
 });
 events.queryRegenerate.on(event => {
-    serverData.server.announcement.name = event.motd;
-    serverData.server.announcement.level = event.levelname;
-    serverData.server.announcement.players.current = event.currentPlayers
+    serverData.server.announcement.name = Utils.formatColorCodesToHTML(event.motd);
+    serverData.server.announcement.level = Utils.formatColorCodesToHTML(event.levelname);
+    serverData.server.announcement.players.current = event.currentPlayers;
     serverData.server.announcement.players.max = event.maxPlayers;
 });
 events.packetBefore(MinecraftPacketIds.Text).on(pk => {
@@ -720,6 +721,7 @@ events.packetAfter(MinecraftPacketIds.PlayerAuthInput).on((pk, ni) => {
             serverData.server.game.players[uuid].gameInfo!.pos.z = pk.pos.z;
             serverData.server.game.players[uuid].gameInfo!.rot.x = pk.pitch;
             serverData.server.game.players[uuid].gameInfo!.rot.y = pk.yaw;
+            serverData.server.game.players[uuid].gameInfo!.ping = serverInstance.networkHandler.instance.peer.GetLastPing(ni.address);
             break;
         }
     }

@@ -17,6 +17,12 @@
         "backupOnPlayerConnected": true,
         "Backups_Times": 30,
         "minIntervalBetweenBackups": 5
+    },
+    "displayRank": {
+        "enable": true
+    },
+    "areaChat": {
+        "radius": 20
     }
 
 }

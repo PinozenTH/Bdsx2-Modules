@@ -1,6 +1,6 @@
 import { NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { TextPacket } from "bdsx/bds/packets";
-import { serverInstance } from "../../../bdsx/bds/server";
+import { serverInstance } from "bdsx/bds/server";
 import { IdByName } from "./connection";
 
 /**
