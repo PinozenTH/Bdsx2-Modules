@@ -126,3 +126,4 @@ temp/
 *.js.map
 *.d.ts
 bedrock_server/
+unRegisteredProject/
