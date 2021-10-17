@@ -80,7 +80,7 @@ events.packetBefore(MinecraftPacketIds.Text).on((packet, ni) => {
     packet.message = `§l§7${player.getName()}: ${message}` //customizable
     console.log(`${player.getName()}: ${message}`) //send message from player to console
     return
-}
+});
 ```
 
 > **Greetings Message for Player**
