@@ -184,6 +184,8 @@ const symbols = [
     'CommandSelectorBase::CommandSelectorBase',
     'CommandSelectorBase::~CommandSelectorBase',
     'CommandSelectorBase::newResults',
+    'CommandItem::createInstance',
+    'CommandMessage::getMessage',
     'ScriptServerActorEventListener::onActorSneakChanged',
     'ScriptServerActorEventListener::onActorCreated',
     'ScriptServerActorEventListener::onActorDeath',
@@ -319,6 +321,11 @@ const symbols = [
     'BlockLegacy::getRenderBlock',
     'ServerPlayer::setArmor',
     'ProjectileComponent::shoot',
+    'Container::getSlots',
+    'Container::getItemCount',
+    'Container::getContainerType',
+    'Container::setCustomName',
+    'Inventory::dropSlot',
 ] as const;
 
 // decorated symbols
