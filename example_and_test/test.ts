@@ -4,7 +4,8 @@
 
 import { asm, FloatRegister, OperationSize, Register } from "bdsx/assembler";
 import { Actor, ActorType, DimensionId } from "bdsx/bds/actor";
-import { RelativeFloat } from "bdsx/bds/blockpos";
+import { AttributeId } from "bdsx/bds/attribute";
+import { BlockPos, RelativeFloat } from "bdsx/bds/blockpos";
 import { CommandContext, CommandPermissionLevel } from "bdsx/bds/command";
 import { JsonValue } from "bdsx/bds/connreq";
 import { HashedString } from "bdsx/bds/hashedstring";
@@ -13,11 +14,12 @@ import { networkHandler, NetworkIdentifier } from "bdsx/bds/networkidentifier";
 import { MinecraftPacketIds } from "bdsx/bds/packetids";
 import { AttributeData, PacketIdToType } from "bdsx/bds/packets";
 import { Player, PlayerPermission } from "bdsx/bds/player";
+import { procHacker } from "bdsx/bds/proc";
 import { serverInstance } from "bdsx/bds/server";
 import { proc, proc2 } from "bdsx/bds/symbols";
 import { bin } from "bdsx/bin";
 import { capi } from "bdsx/capi";
-import { CANCEL } from "bdsx/common";
+import { AttributeName, CANCEL } from "bdsx/common";
 import { NativePointer } from "bdsx/core";
 import { CxxMap } from "bdsx/cxxmap";
 import { CxxVector, CxxVectorToArray } from "bdsx/cxxvector";
@@ -32,7 +34,7 @@ import { bin64_t, bool_t, CxxString, float32_t, float64_t, int16_t, int32_t, uin
 import { CxxStringWrapper } from "bdsx/pointer";
 import { PseudoRandom } from "bdsx/pseudorandom";
 import { Tester } from "bdsx/tester";
-import { hex } from "bdsx/util";
+import { getEnumKeys, hex } from "bdsx/util";
 
 let sendidcheck = 0;
 let nextTickPassed = false;
@@ -475,26 +477,34 @@ Tester.test({
             ['PositionTrackingDBServerBroadcast', 'PositionTrackingDBServerBroadcastPacket'],
             ['PositionTrackingDBClientRequest', 'PositionTrackingDBClientRequestPacket'],
             ['NPCDialoguePacket', 'NpcDialoguePacket'],
+            ['AddEntityPacket', 'AddEntity'],
+            ['EduUriResource', 'EduUriResourcePacket'],
+            ['CreatePhoto', 'CreatePhotoPacket'],
+            ['UpdateSubChunkBlocks', 'UpdateSubChunkBlocksPacket'],
         ]);
 
         for (const id in PacketIdToType) {
-            const Packet = PacketIdToType[+id as keyof PacketIdToType];
-            const packet = Packet.create();
+            try {
+                const Packet = PacketIdToType[+id as keyof PacketIdToType];
+                const packet = Packet.create();
 
-            let cxxname = packet.getName();
-            const renamed = wrongNames.get(cxxname);
-            if (renamed != null) cxxname = renamed;
+                let getNameResult = packet.getName();
+                const realname = wrongNames.get(getNameResult);
+                if (realname != null) getNameResult = realname;
 
-            let name = Packet.name;
+                let name = Packet.name;
 
-            this.equals(cxxname, name);
-            this.equals(packet.getId(), Packet.ID);
+                this.equals(getNameResult, name);
+                this.equals(packet.getId(), Packet.ID);
 
-            const idx = name.lastIndexOf('Packet');
-            if (idx !== -1) name = name.substr(0, idx) + name.substr(idx+6);
-            this.equals(MinecraftPacketIds[Packet.ID], name);
+                const idx = name.lastIndexOf('Packet');
+                if (idx !== -1) name = name.substr(0, idx) + name.substr(idx+6);
+                this.equals(MinecraftPacketIds[Packet.ID], name);
 
-            packet.dispose();
+                packet.dispose();
+            } catch (err) {
+                this.error(err.message);
+            }
         }
 
         for (const id in MinecraftPacketIds) {
@@ -608,7 +618,23 @@ Tester.test({
                         const cmdlevel = actor.abilities.getCommandPermissionLevel();
                         this.assert(CommandPermissionLevel.Normal <= cmdlevel && cmdlevel <= CommandPermissionLevel.Internal, 'invalid actor.abilities');
                         const playerlevel = actor.abilities.getPlayerPermissionLevel();
-                        this.assert(PlayerPermission.VISITOR <= cmdlevel && cmdlevel <= PlayerPermission.CUSTOM, 'invalid actor.abilities');
+                        this.assert(PlayerPermission.VISITOR <= playerlevel && playerlevel <= PlayerPermission.CUSTOM, 'invalid actor.abilities');
+
+                        this.equals(actor.getCertificate().getXuid(), connectedXuid, 'xuid mismatch');
+
+                        const pos = actor.respawnPosition;
+                        const dim = actor.respawnDimension;
+                        this.equals(dim, DimensionId.Undefined, 'respawn dimension mismatch');
+
+                        actor.setRespawnPosition(BlockPos.create(1,2,3), DimensionId.TheEnd);
+                        const respawnpointCheck = actor.respawnPosition.x === 1 &&
+                            actor.respawnPosition.y === 2 &&
+                            actor.respawnPosition.z === 3 &&
+                            actor.respawnDimension === DimensionId.TheEnd;
+                        this.assert(respawnpointCheck, 'respawn position mismatch');
+                        if (!respawnpointCheck) process.exit(-1); // terminate it for not saving it.
+
+                        actor.setRespawnPosition(pos, dim);
                     }
 
                     const actualId = actor.getUniqueIdLow() + ':' + actor.getUniqueIdHigh();
@@ -650,14 +676,53 @@ Tester.test({
             }
         });
     },
+
+    attributeNames():void {
+        @nativeClass(null)
+        class Attribute extends NativeClass {
+            @nativeField(int32_t)
+            u:int32_t;
+            @nativeField(int32_t)
+            id:int32_t;
+            @nativeField(HashedString)
+            name:HashedString;
+        }
+        const getByName = procHacker.js('Attribute::getByName', Attribute, null, HashedString);
+        for (const key of getEnumKeys(AttributeId)) {
+            const name = AttributeName[key];
+            const hashname = HashedString.construct();
+            hashname.set(name);
+            const attr = getByName(hashname);
+            this.equals(attr.id, AttributeId[key], `AttributeId(${name}) mismatch`);
+            hashname.destruct();
+        }
+    },
+
+    testPlayerCount() {
+        events.queryRegenerate.once(v=>{
+            this.equals(v.currentPlayers, 0, 'player count mismatch');
+            this.equals(v.maxPlayers, serverInstance.getMaxPlayers(), 'max player mismatch');
+        });
+        events.packetAfter(MinecraftPacketIds.Login).once((packet, ni)=>{
+            setTimeout(()=>{
+                events.queryRegenerate.once(v=>{
+                    this.equals(v.currentPlayers, 1, 'player count mismatch');
+                });
+            }, 1000);
+        });
+    }
 }, true);
 
 let connectedNi: NetworkIdentifier;
 let connectedId: string;
+let connectedXuid:string;
 
 events.packetRaw(MinecraftPacketIds.Login).on((ptr, size, ni) => {
     connectedNi = ni;
 });
 events.packetAfter(MinecraftPacketIds.Login).on(ptr => {
-    connectedId = ptr.connreq!.cert.getId();
+    if (ptr.connreq === null) return;
+    const cert = ptr.connreq.cert;
+    connectedId = cert.getId();
+    connectedXuid = cert.getXuid();
 });

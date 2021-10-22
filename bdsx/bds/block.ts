@@ -1,10 +1,11 @@
 import { abstract } from "../common";
 import { VoidPointer } from "../core";
-import { CxxVector } from "../cxxvector";
+import type { CxxVector } from "../cxxvector";
 import { nativeClass, NativeClass, nativeField } from "../nativeclass";
 import { bool_t, CxxString, CxxStringWith8Bytes, int32_t, uint16_t } from "../nativetype";
-import { BlockPos } from "./blockpos";
-import { CommandName } from "./commandname";
+import type { BlockPos, ChunkPos } from "./blockpos";
+import type { ChunkSource, LevelChunk } from "./chunk";
+import type { CommandName } from "./commandname";
 import { HashedString } from "./hashedstring";
 
 @nativeClass(null)
@@ -60,10 +61,18 @@ export class Block extends NativeClass {
     /**
      * @param blockName Formats like 'minecraft:wool' and 'wool' are both accepted
      */
-    static constructWith(blockName:string, data:number = 0):Block|null {
+    static constructWith(blockName:BlockId, data?: number):Block|null;
+    static constructWith(blockName:string, data?: number):Block|null;
+    static constructWith(blockName:BlockId|string, data:number = 0):Block|null {
         abstract();
     }
-    /** @deprecated */
+
+    static create(blockName:BlockId, data?: number):Block|null;
+    static create(blockName:string, data?: number):Block|null;
+
+    /**
+     * @param blockName Formats like 'minecraft:wool' and 'wool' are both accepted
+     */
     static create(blockName:string, data:number = 0):Block|null {
         return this.constructWith(blockName, data);
     }
@@ -99,6 +108,15 @@ export class BlockSource extends NativeClass {
         abstract();
     }
     setBlock(blockPos:BlockPos, block:Block):boolean {
+        abstract();
+    }
+    getChunk(pos:ChunkPos):LevelChunk {
+        abstract();
+    }
+    getChunkAt(pos:BlockPos):LevelChunk {
+        abstract();
+    }
+    getChunkSource():ChunkSource {
         abstract();
     }
 }

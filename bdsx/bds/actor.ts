@@ -6,15 +6,15 @@ import { makefunc } from "../makefunc";
 import { nativeClass, NativeClass, nativeField } from "../nativeclass";
 import { bin64_t, CxxString, int32_t, int64_as_float_t, NativeType } from "../nativetype";
 import { AttributeId, AttributeInstance, BaseAttributeMap } from "./attribute";
-import { BlockSource } from "./block";
-import { Vec2, Vec3 } from "./blockpos";
+import type { BlockSource } from "./block";
+import type { Vec2, Vec3 } from "./blockpos";
 import type { CommandPermissionLevel } from "./command";
 import { Dimension } from "./dimension";
 import { MobEffect, MobEffectIds, MobEffectInstance } from "./effects";
 import { HashedString } from "./hashedstring";
 import type { ArmorSlot, ItemStack } from "./inventory";
-import { Level } from "./level";
-import { NetworkIdentifier } from "./networkidentifier";
+import type { Level } from "./level";
+import type { NetworkIdentifier } from "./networkidentifier";
 import { Packet } from "./packet";
 import type { ServerPlayer } from "./player";
 
@@ -24,7 +24,8 @@ export type ActorUniqueID = bin64_t;
 export enum DimensionId { // int32_t
     Overworld = 0,
     Nether = 1,
-    TheEnd = 2
+    TheEnd = 2,
+    Undefined = 3,
 }
 
 export class ActorRuntimeID extends VoidPointer {
@@ -366,8 +367,22 @@ export class EntityRefTraits extends NativeClass {
     context:OwnerStorageEntity;
 }
 
+@nativeClass(null)
+export class EntityContextBase extends NativeClass {
+    @nativeField(int32_t, 0x8)
+    entityId:int32_t;
+
+    isVaild():boolean {
+        abstract();
+    }
+    _enttRegistry():VoidPointer {
+        abstract();
+    }
+}
+
 export class Actor extends NativeClass {
     vftable:VoidPointer;
+    ctxbase:EntityContextBase;
     /** @deprecated use getIdentifier */
     get identifier():EntityId {
         return this.getIdentifier();
