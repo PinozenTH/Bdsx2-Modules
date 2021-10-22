@@ -16,7 +16,7 @@ Modded Version of [BDSX](https://github.com/bdsx/bdsx)
 - Display Player Rank (Original code from TSGorilla)
 
 **Developer Note**:
-Please try [BDSX](httsp://github.com/bdsx/bdsx) before try Mine
+Please Extract Only PinozenTH-Modules if you're already code index.ts
 
 ### On start
 
