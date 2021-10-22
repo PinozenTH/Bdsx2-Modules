@@ -2,7 +2,7 @@
 
 Modded Version of [BDSX](https://github.com/bdsx/bdsx)
 
-[Lasted Version](https://github.com/PinozenTH/Bdsx2/releases/lasted/download/Bdsx2-PinozenTH.zip)
+[Lasted Version](https://github.com/PinozenTH/Bdsx2/releases/lasted/download/Bdsx2-Modules-PinozenTH.zip)
 
 #### Build-in Features
 
