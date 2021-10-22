@@ -16,7 +16,7 @@ Modded Version of [BDSX](https://github.com/bdsx/bdsx)
 - Display Player Rank (Original code from TSGorilla)
 
 **Developer Note**:
-This project doesn't just copy paste but we change some of code and remove some of unused scripts
+Please try [BDSX](httsp://github.com/bdsx/bdsx) before try Mine
 
 ### On start
 
