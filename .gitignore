@@ -15,6 +15,7 @@ CONTRIBUTING.md
 launcher.ts
 pdbcache.ini
 pdbcache_by_example.ini
+LICENSE.txt
 *.d.ts
 *.ini
 *.js
