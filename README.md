@@ -1,134 +1,88 @@
-##### BDSX2 By PinozenTH
+# BDSX : BDS + node.js
+![logo](bdsx/icon/icon.png)  
+BDSX is a modification of Minecraft Bedrock Dedicated Server, supporting [node.js](https://nodejs.org/). Because it is based on the offical BDS software, it includes all the features of vanilla Minecraft, but includes other features as well, such as hooking functions and packets to change behavior. 
 
-Modded Version of [BDSX](https://github.com/bdsx/bdsx)
+## Features
 
-[Lasted Version](https://github.com/PinozenTH/Bdsx2/releases/lasted/download/Bdsx2-Modules-PinozenTH.zip)
+* OS: Windows(Recommended), Linux with Wine(Unstable)
+* All Minecraft BDS features
+* All node.js features (*that are supported by ChakraCore. See [this page](https://github.com/bdsx/bdsx/wiki/Available-NPM-Modules) for more information)
+* Debug with Visual Studio Code (You can debug plugins too)
+* Intercept network packets
+* [Custom Commands](https://github.com/bdsx/bdsx/wiki/Custom-Commands)
+* Low-level hooking and [DLL Call](https://github.com/bdsx/bdsx/wiki/Call-DLL-Directly)
+* Get IP Address & XUID (Example below)
 
-#### Build-in Features
-
-- [Modules (Main Project)](https://github.com/minyee2913/2913Module)
-- [AntiCheats](https://github.com/ethaniccc/Esoteric-BDSX)
-- [Basic AntiCheats](https://github.com/Rjlintkh/bdsx-aniketos)
-- [Webpanel](https://github.com/Rjlintkh/bdsx-web-panel)
-- [AutoBackups](https://github.com/LastSandwich/bdsx-backup)
-- [Private Message](https://github.com/WinsomeQuill/private-message)
-- [Invsee](https://github.com/Brougud/BDSx-Main/blob/main/seeinv.ts)
-- Display Player Rank (Original code from TSGorilla)
-
-**Developer Note**:
-Please Extract Only PinozenTH-Modules if you're already code index.ts
-
-### On start
-
-go to PinozenTH Modules
-
-run
-```
-npm i
-```
-## Config
-
-> **Webpanel**
-
-Original:
-[Bdsx-web-panel](https://github.com/Rjlintkh/bdsx-web-panel.git)
-
-- GraphUpdates: Update CPU graph every second (default: 60) [WARN: Low = More Resource usage/May crash your PC if too low]
-- same_port_with_bds: use webpanel port with bds port (default:19132)
-- port: port of you webpanel (domain:port | default: 19132)
-- chat_name: display in chat (like this <chat_name> message | default: Server)
-- username: your username to login to panel (default: admin)
-- password: your password to login to panel (default: 123)
-
-> **AutoBackups**
-
-Original:
-[bdsx-backup](https://github.com/LastSandwich/bdsx-backup.git)
-
-- BackupsBroadcast: Broadcast to server player when backup has started
-- backupOnStart: backup will occur when the server is started
-- interval: minutes between each backup
-- skipIfNoActivity: only create a backup if players have been active the previous backup
-- backupOnPlayerConnected: run a backup when a player joins
-- backupOnPlayerDisconnected: run a backup when a player leaves
-- minIntervalBetweenBackups: minimum minutes between backups
-- bedrockServerPath: path to the bedrock_server folder - defaults to "../../bedrock_server"
-
-> **PlayerRanks**
-
-- Rank: Display Player Rank on chat (like this: [Rank] PlayerName: Message)
-
-__***Please customize by your own.***__
-
-Example Script:
-```
-events.packetBefore(MinecraftPacketIds.Text).on((packet, ni) => {
-    let player = ni.getActor() as ServerPlayer
-    if(player.getPermissionLevel() === PlayerPermission.OPERATOR  && player.hasTag("OWNER")) { //tag @s add OWNER This require OP to display this rank
-        let message = packet.message;
-        packet.message = `§6§l[OWNER]§r §f${player.getName()}: §6${message}` //customizable
-        console.log(`[OWNER] ${player.getName()}: ${message}`) //send message from player to console
-        return
-    }
-        if(player.hasTag("VIP")) { //tag @s add VIP
-        let message = packet.message;
-        packet.message = `§a§l[VIP]§r §f${player.getName()}: §a${message}` //customizable
-        console.log(`[VIP] ${player.getName()}: ${message}`) //send message from player to console
-        return
-    }
-    let message = packet.message; //normal player
-    packet.message = `§l§7${player.getName()}: ${message}` //customizable
-    console.log(`${player.getName()}: ${message}`) //send message from player to console
-    return
+```ts
+import { events } from "bdsx/event";
+import { MinecraftPacketIds } from 'bdsx/bds/packetids';
+events.packetAfter(MinecraftPacketIds.Login).on((ptr, networkIdentifier, packetId)=>{
+    const ip = networkIdentifier.getAddress();
+    if (ptr.connreq === null) return; // Wrong client version
+    const cert = ptr.connreq.cert;
+    const xuid = cert.getXuid();
+    const username = cert.getId();
+    console.log(`Connection: ${username}> IP=${ip}, XUID=${xuid}`);
 });
 ```
 
-> **Greetings Message for Player**
+## Usage
+* Requirements
+    * [node.js](https://nodejs.org/)
+    * Wine (if using Linux)
+* Recommended  
+    * [VSCode](https://code.visualstudio.com/)
 
-- Greeting Joined Player
-
-Please Change Scripts in PinozenTH Modules/GreetingPlayer.ts
-
-Example Script
-```
-    //ranked Player
-    if(Player.hasTag('rank')) {
-        let message =  `Welcome [rank] ${PlayerName} to server`;
-        setTimeout(()=>{
-            greet(`tellraw @a {"rawtext":[{"translate": "${message}"}]}`);
-    }, 10000);
-    return;
-    }
-    //unranked || normal Player
-    let message =  `Welcome [rank] ${PlayerName} to server`;
-    setTimeout(()=>{
-            greet(`tellraw @a {"rawtext":[{"translate": "${message}"}]}`);
-    }, 10000);
-    return;
+To download, clone the repo:
+```bash
+git clone https://github.com/bdsx/bdsx.git
 ```
 
-> **Join Announce ranked player Join Event**
+### Debug & Launch with VSCode
+When starting BDSX with VSCode, you need to
+1. Open the project with VSCode
+2. Install the legacy debugger. the suggestion dialog will be opened up on the right bottom corner.
+3. Open a terminal (Ctrl+Shift+｀)
+4. Run `npm i` to install npm packages and BDS
+5. Press `F5` to build and run in VSCode
 
+### Launch with the executable
+You can now run the program by running `bdsx.bat` on Windows or `bdsx.sh` on Linux.
 
+## File Structure
+```sh
+[bdsx project]
+├ [bdsx] # Core Library
+├ [example_and_test] # Examples for using the BDSX api and tests of the BDSX api
+├ [bedrock_server] # BDS instalation
+├ launcher.ts # Script for launching BDS.
+├ index.ts # Main entry point. This file is required by the launcher when BDS is fully started.
+├ bdsx.sh # Executable for Linux
+└ bdsx.bat # Executable for Windows 
+```
+> Please start your own code from ./index.ts
 
-> **Found Bugs in module??**
+> By default index.ts imports example_and_test. To disable the examples simply remove the import or replace it with your own code.
 
-pls contract me via Discord: `PinoZenTH#0349`
+> For examples, see the `example_and_test` folder. There are some plugins available on npm in the @bdsx organization as well.  
 
-> **if you found bugs on [BDSX](https://github.com/bdsx/bdsx)**
-Please join [BDSX Discord](https://discord.gg/pC9XdkC) and discuss to [kerikera](https://github.com/karikera)
+## Make a bdsx plugin
+Please check `plugin-example/README.md`.
 
-# Project Credits
+## Docker Image
+https://hub.docker.com/r/karikera/bdsx
 
-An awesome bds project **[BDSX](https://github.com/bdsx/bdsx)**
+## BDSX Discussions
+https://github.com/bdsx/bdsx/discussions
 
-> **Build-in Plugins**
+## BDSX Wiki (Include JS API Reference)
+https://github.com/bdsx/bdsx/wiki
 
-- [Modules (Main Project)](https://github.com/minyee2913/2913Module)
-- [AntiCheats](https://github.com/ethaniccc/Esoteric-BDSX)
-- [Basic AntiCheats](https://github.com/Rjlintkh/bdsx-aniketos)
-- [Webpanel](https://github.com/Rjlintkh/bdsx-web-panel)
-- [AutoBackups](https://github.com/LastSandwich/bdsx-backup)
-- [Private Message](https://github.com/WinsomeQuill/private-message)
-- [Invsee](https://github.com/Brougud/BDSx-Main/blob/main/seeinv.ts)
+## Bug Report and Q&A
+https://github.com/bdsx/bdsx/issues
 
+## Discord for Q&A
+https://discord.gg/pC9XdkC
+
+## BDSX Core
+https://github.com/bdsx/bdsx-core
